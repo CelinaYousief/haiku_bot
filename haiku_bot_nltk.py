@@ -21,10 +21,6 @@ from nltk.corpus import cmudict
 
 def main():
 
-    ACCESS = '915044142668902400-MuwwRZlXdcN4Mpq2D0QdQUAjV3ha1nS'
-    ACCESS_SECRET = '0VqF6IXZFvJJ7b4MkCwiLVhH44EfHgDJLG5Gea34wYMzK'
-    CONSUMER = 'F6gHvKVVWkigXhsujsaVSUTtz'
-    CONSUMER_SECRET = '4rXGMHTo5spVbEcQCgPuAOQsZAoHSaApSgfYPeYFpEUybJkQwn'
 
     auth =tweepy.OAuthHandler(CONSUMER,CONSUMER_SECRET)
     auth.set_access_token(ACCESS, ACCESS_SECRET)
