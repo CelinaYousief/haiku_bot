@@ -15,16 +15,18 @@ from nltk.corpus import cmudict
 
 def main():
 
-
+    #connect to twitter API
     auth =tweepy.OAuthHandler(CONSUMER,CONSUMER_SECRET)
     auth.set_access_token(ACCESS, ACCESS_SECRET)
 
     api = tweepy.API(auth)
     
+    #get text from online textbook
     raw_text = get_text()
     #raw_text = format_text(raw_text)
     markoved_text = markov_it(raw_text)
     
+    #create haiku from lines
     line1 = generate(markoved_text,5)
     last = line1[-1]
     out_line1 = ' '.join(line1)
@@ -62,19 +64,24 @@ def get_text():
     url = 'http://greenteapress.com/thinkpython2/html/index.html'
     page = requests.get(url)
 
+    #find possible links for all chapters in book
     tree = html.fromstring(page.content)
     text = tree.xpath('//a/@href')
     text = text[2:-18]
-
+    
+    #create url for random chapter
     url = 'http://greenteapress.com/thinkpython2/html/' + random.choice(text)
     page = requests.get(url)
 
+    #get text from url
     tree = html.fromstring(page.content)
     text = tree.xpath('//p/text()')
 
     out_text = " ".join(text)
     out_text = re.sub(r"[^a-zA-Z0-9\']+"," ",out_text)
     out_array = out_text.split()
+
+    #if is a digit, change it to a word
     for i in range(0,len(out_array)):
         if out_array[i].isdigit():
             out_array[i] = num2words(out_array[i])
@@ -85,6 +92,7 @@ def get_text():
 #------------------------------------------------------------------------------
 
 def markov_it(original_text):
+    #build markov dictionary word(key)->list of words(value)
     markov_dict = {}
    
     for x in range(0,len(original_text)-1):
@@ -104,7 +112,8 @@ def syllable_count(words):
     
     d = cmudict.dict()
     count = 0
-
+    
+    #count syllables using nltk dictionary
     for word in words:
         print(word)
         syl_result =[len(list(y for y in x if y[-1].isdigit())) for x in d[word.lower()]]
@@ -115,6 +124,7 @@ def syllable_count(words):
 #----------------------------------------------------------------------------------
 
 def generate(markoved_text,length,last_word = ' '):
+    #generate individual lines
 
     curr_word = ' '
     line_list = []
@@ -144,29 +154,10 @@ def generate(markoved_text,length,last_word = ' '):
                 break
             else:
                 curr_word = line_list[-1]
-    print("---made it---")
+    
     return generate(markoved_text, length, last_word)
 
 #----------------------------------------------------------------------------------
-
-#def format_text(text_array):
-
-    #new_text = []
-    
-    #for wrd in text_array:
-        #if wrd.isdigit() == True:
-            #new_text.append(num2words(wrd))
-        #else:
-            #new_text.append(re.sub(r'[^a-zA-Z0-9]+',' ',wrd))
-
-    
- 
-    #return new_text
-
-
-
-#-----------------------------------------------------------------------------------
-
 
 
 
